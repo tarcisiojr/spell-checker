@@ -1,6 +1,27 @@
-var fs     = require('fs'),
-    config = require('./config.js'),
+#!/usr/bin/env node
+
+var fs = require('fs'),
     colors = require('colors');
+
+// Validando a qtd de argumentos.
+if (process.argv.length < 3) {
+    console.log('-----------------------------------------');
+    console.log('Uso: spell-checker config_file.js');
+    console.log('-----------------------------------------');
+    console.log('\nconfig_file.js -> Arquivo de configuração que contém os parsers e diretórios que serão escaneados e validados.');
+    console.log('\n');
+    return 1;
+}
+
+var configFileName = process.argv[2];
+
+// Verificando o arquivo de configuracao fornecido.
+if (!fs.existsSync(configFileName) || !fs.statSync(configFileName).isFile()) {
+    console.log('Erro: '.red + 'O arquivo \'' + configFileName + '\' não existe!');
+    return 1;
+}
+
+var config = require(configFileName);
 
 /**
  * Realiza a validacao de ortografia para o arquivo de nome fornecido.

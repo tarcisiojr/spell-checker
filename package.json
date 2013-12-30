@@ -1,0 +1,43 @@
+{
+  "name": "spell-checker",
+  "preferGlobal": true,
+  "version": "0.0.8",
+  "author": "Tarcísio Abadio de Magalhães Júnior <tarcisiojunior@gmail.com>",
+  "description": "A simple Nodejs application that checks spelling of files.",
+  "contributors": [ 
+    {
+      "name": "Marak Squires",
+      "email": "marak@nodejitsu.com"
+    } 
+  ],
+  "bin": {
+    "spell-checker": "./spell-checker.js"
+  },
+  "scripts": {
+    "start": "node ./spell-checker.js"
+  },
+  "main": "./spell-checker.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarcisiojr/spell-checker.git"
+  },
+  "keywords": [
+    "cli",
+    "checker",
+    "spelling",
+    "check",
+    "spell"
+  ],
+  "dependencies" : {
+    "colors"   :  "*"
+  },
+  "analyze": true,
+  "devDependencies": {
+    "vows"    :  "0.5.x",
+    "request" :  "2.1.x"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10.24"
+  }
+}
