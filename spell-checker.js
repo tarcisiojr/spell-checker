@@ -1,19 +1,28 @@
 #!/usr/bin/env node
 
 var fs = require('fs'),
-    colors = require('colors');
+    colors = require('colors'),
+    path = require('path');
 
-// Validando a qtd de argumentos.
-if (process.argv.length < 3) {
-    console.log('-----------------------------------------');
-    console.log('Uso: spell-checker config_file.js');
-    console.log('-----------------------------------------');
-    console.log('\nconfig_file.js -> Arquivo de configuração que contém os parsers e diretórios que serão escaneados e validados.');
-    console.log('\n');
-    return 1;
+var packInfo = require('./package');
+
+var program = require('commander');
+
+program
+    .version(packInfo.version)
+    .usage('-c <file>')
+    .option('-c, --config-file [file]', 'arquivo de configuração')
+    .parse(process.argv);
+
+
+if (!program.configFile || program.configFile === true) {
+    program.help();
 }
 
-var configFileName = process.argv[2];
+var configFileName = path.resolve(program.configFile).charAt(0) == path.sep 
+    ? path.resolve(program.configFile) :  path.resolve('./' + program.configFile);
+
+console.log('Config file....: %s', configFileName);
 
 // Verificando o arquivo de configuracao fornecido.
 if (!fs.existsSync(configFileName) || !fs.statSync(configFileName).isFile()) {
@@ -70,8 +79,18 @@ function checkSpellOfDir(dir, callback) {
     }
 }
 
+var pathOfDict = path.resolve(config.dictionary).charAt(0) == path.sep 
+    ? path.resolve(config.dictionary) : path.resolve('./' + config.dictionary);
+
+console.log('Dictionary file: %s', pathOfDict);
+
+if (!fs.existsSync(pathOfDict) || !fs.statSync(pathOfDict).isFile()) {
+    console.log('Erro: '.red + 'O arquivo \'' + pathOfDict + '\' não existe!');
+    return 1;
+}
+
 // Dicionario
-var dict = require(config.dictionary);
+var dict = require(pathOfDict);
 
 // Removendo duplicados.
 dict = dict.filter(function(elem, pos, self) {
@@ -81,7 +100,7 @@ dict = dict.filter(function(elem, pos, self) {
 // Erros
 var filesErrors = {};
 
-console.log('Total de palavaras no dicionário: ' + (dict.length > 0 ? ('' + dict.length).green : ('' + dict.length).red));
+console.log('Total de palavaras no dicionário: ' + (dict.length > 0 ? ('' + dict.length).green : ('' + dict.length).red), '\n');
 
 config.dirs.forEach(function(dir, i) {
     
@@ -122,7 +141,7 @@ config.dirs.forEach(function(dir, i) {
             
             filesErrors[fileName] = outOfDict;
             
-            console.log(' OK ' + ((tokens.length - errors) + '').green + ' | Falha ' + ('' + errors).red + ' : ' + fileName);
+            console.log('Erro -> ' + ('' + errors).red + ' falhas: ' + fileName);
         }
     });
 });
