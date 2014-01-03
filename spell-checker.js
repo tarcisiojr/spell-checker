@@ -8,15 +8,19 @@ var packInfo = require('./package');
 
 var program = require('commander');
 
+var msgDefault = "(esta opção ignora os valores informados no arquivo de configuração)";
+
 program
     .version(packInfo.version)
     .usage('-c <file>')
-    .option('-c, --config-file [file]', 'arquivo de configuração')
+    .option('-c, --config-file [file]'  , 'arquivo de configuração')
+    .option('-p, --path [file]'         , 'arquivo ou diretório a ser validado ' + msgDefault.red)
+    .option('-d, --dictionary [file]'   , 'dicionário a ser utilizado ' + msgDefault.red)
     .parse(process.argv);
 
 
 if (!program.configFile || program.configFile === true) {
-    program.help();
+    program.configFile = __dirname + '/config.js';
 }
 
 var configFileName = path.resolve(program.configFile).charAt(0) == path.sep 
@@ -66,8 +70,8 @@ function checkSpellOfDir(dir, callback) {
     
     if (stat.isDirectory()) {
         
-        fs.readdir(dir, function(err, files) {
-            files.forEach(function(fileOrDir) {
+        fs.readdir(dir, function(err, files) {            
+            files && files.forEach(function(fileOrDir) {
                 if (!fileOrDir.match(/^\./)) {
                     checkSpellOfDir(dir + '/' + fileOrDir, callback);
                 }                
@@ -79,8 +83,14 @@ function checkSpellOfDir(dir, callback) {
     }
 }
 
-var pathOfDict = path.resolve(config.dictionary).charAt(0) == path.sep 
-    ? path.resolve(config.dictionary) : path.resolve('./' + config.dictionary);
+var pathOfDict = config.dictionary;
+
+if (program.dictionary && program.dictionary !== true) {
+    pathOfDict = program.dictionary;
+}
+
+pathOfDict = path.resolve(pathOfDict).charAt(0) == path.sep 
+    ? path.resolve(pathOfDict) : path.resolve('./' + pathOfDict);
 
 console.log('Dictionary file: %s', pathOfDict);
 
@@ -102,7 +112,15 @@ var filesErrors = {};
 
 console.log('Total de palavaras no dicionário: ' + (dict.length > 0 ? ('' + dict.length).green : ('' + dict.length).red), '\n');
 
-config.dirs.forEach(function(dir, i) {
+
+var dirs = config.dirs;
+
+// O usuario forneceu no comando um diretorio ou arquivo, entao ignora o diretorio da configuracao.
+if (program.path && program.path !== true) {
+    dirs = [program.path];
+}
+
+dirs.forEach(function(dir, i) {
     
     checkSpellOfDir(dir, function(err, tokens, fileName) {        
         var errors = 0;

@@ -1,7 +1,7 @@
 {
   "name": "spell-checker",
   "preferGlobal": true,
-  "version": "0.0.15",
+  "version": "0.0.17",
   "author": "Tarcísio Abadio de Magalhães Júnior <tarcisiojunior@gmail.com>",
   "description": "A simple Nodejs application that checks spelling of files.",
   "contributors": [ 
