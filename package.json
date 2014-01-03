@@ -1,13 +1,13 @@
 {
   "name": "spell-checker",
   "preferGlobal": true,
-  "version": "0.0.14",
+  "version": "0.0.15",
   "author": "Tarcísio Abadio de Magalhães Júnior <tarcisiojunior@gmail.com>",
   "description": "A simple Nodejs application that checks spelling of files.",
   "contributors": [ 
     {
-      "name": "Marak Squires",
-      "email": "marak@nodejitsu.com"
+      "name": "Tarcísio Abadio de Magalhães Júnior",
+      "email": "tarcisiojunior@gmail.com"
     } 
   ],
   "bin": {

@@ -3,7 +3,7 @@
 module.exports = {
     // Diretorios que serao validados.
     dirs: [
-        './erp'//,
+        '/dados/Workspace/Java/erp'//,
         //'/dados/Workspace/Java/portal',
         //'/dados/Workspace/Java/sac',
         //'/dados/Workspace/Java/administrativo'
@@ -32,8 +32,48 @@ module.exports = {
             return ret;
         },
         
-        'pthml': function(content) {
+        'phtml': function(content) {
+            // Conteudo dentro das tags <..> TEXTO </..>
+            var regex = /<([\w]+)[^>]*>([^<^&.]*?)<\/\1>/ig,
+                ret   = [],
+                matches;                        
             
+            while ((matches = regex.exec(content)) !== null) {
+                var tokens = matches[2].match(/[a-zA-Zà-úÀ-Ú]{3,}/ig);
+                
+                if (tokens) {
+                    ret = ret.concat(tokens);  
+                }
+            }        
+            
+            // Conteudo dentro das tags <..> TEXTO </..>
+            regex = /data-desc\s*=\s*"(.*?)"/ig
+            
+            while ((matches = regex.exec(content)) !== null) {
+                var tokens = matches[1].match(/[a-zA-Zà-úÀ-Ú]{3,}/ig);
+                
+                if (tokens) {
+                    ret = ret.concat(tokens);  
+                }
+            }
+            
+            return ret;
+        },
+        
+        'js': function(content) {
+             var regex = /Utils\.(warn|info|error)?\s*\(\s*(["'])(.*?)\2/ig,
+                ret   = [],
+                matches;                        
+            
+            while ((matches = regex.exec(content)) !== null) {
+                var tokens = matches[3].match(/[a-zA-Zà-úÀ-Ú]{3,}/ig);
+                
+                if (tokens) {
+                    ret = ret.concat(tokens);  
+                }              
+            }
+
+            return ret;
         }
     }
 };

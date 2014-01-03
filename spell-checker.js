@@ -44,7 +44,7 @@ function checkSpellOfFile(fileName, callback) {
             
             //console.log('Validando ' + fileName);
             
-            fs.readFile(fileName, function(err, data) {
+            fs.readFile(fileName, 'UTF-8', function(err, data) {
                 callback(err, config.parsers[ext](data), fileName);
             });
             
@@ -131,7 +131,7 @@ config.dirs.forEach(function(dir, i) {
             
             if (err) {            
                 errors++;
-                outOfDict.push(token);
+                outOfDict.indexOf(token) == -1 && outOfDict.push(token);
             }
         });
                 
@@ -149,8 +149,14 @@ config.dirs.forEach(function(dir, i) {
 process.on('exit', function() {
     console.log('\n\n==== ERROS ====\n'.red);
     
+    var totalErrs = 0;
+    
     for (var fileName in filesErrors) {
         console.log(fileName + ': \n', filesErrors[fileName], '\n');
+        
+        totalErrs += filesErrors[fileName].length;
     }
+    
+    console.log("Total de erros: %d".red, totalErrs);
 });
 
